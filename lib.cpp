@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include "lib.h"
 using namespace std;
 
@@ -23,15 +24,33 @@ void witerEdge()
 void GameStart()
 {
 	GUI_Init(1);
-	
+	//MoveCube(10, 10, 1, 1,"#" ,1);
 	//GUI_WriterPixel(10, 10, "Hello,world");
 	//GUI_PaddingAll(1);
-	//GUI_PaddingPart(10, 10, 5, 3, 1);
+	//GUI_PaddingPart(10, 10, 5, 3,'A', 1);
+	//GUI_PaddingPart(10, 20, 5, 3, "A", 1);
 	//GUI_Clear(10,10,10,10);
 	//GUI_DrawRect(10, 10, 12, 5,"", 1);
+	thread t1(MoveCube, 60, 15, 5, 3, 10, 1, 'A', 1, 1000);
+	thread t2(MoveCube, 60, 15, 5, 3, 10 ,2, 'B', 1, 1000);
+	thread t3(MoveCube, 60, 15, 5, 3, 10, 3, 'C', 1, 1000);
+	thread t4(MoveCube, 60, 15, 5, 3, 10, 4, 'D', 1, 1000);
+	thread t5(MoveCube, 60, 15, 5, 3, 10, 5, 'E', 1, 1000);
+	thread t6(MoveCube, 60, 15, 5, 3, 10, 6, 'F', 1, 1000);
+	thread t7(MoveCube, 60, 15, 5, 3, 10, 7, 'G', 1, 1000);
+	thread t8(MoveCube, 60, 15, 5, 3, 10, 8, 'H', 1, 1000);
+	t1.join();
+	t2.join();
+	t3.join();
+	t4.join();
+	t5.join();
+	t6.join();
+	t7.join();
+	t8.join();
+	//MoveCube(10, 10, 5, 3, 10, '#',1,1000);
 	while (1)
 	{
-		MoveCube(10, 10, 1, 1,"#" ,1);
+		
 		
 	}
 }

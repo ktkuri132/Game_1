@@ -3,7 +3,34 @@
 using namespace std;
 
 // 设置显存    30行120列
-string OutPutMemory[30][120];
+CHAR_INFO OutPutMemory[30][120];
+
+// 获取控制台窗口大小
+COORD GetConsoleSize()
+{
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (GetConsoleScreenBufferInfo(hConsole, &csbi))
+	{
+		COORD size;
+		size.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+		size.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+		return size;
+	}
+	return { 120, 30 }; // 默认大小
+}
+
+
+// 刷新显存
+void RefreshScreen()
+{
+	COORD size = GetConsoleSize();
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD bufferSize = { size.X, size.Y };
+	COORD bufferCoord = { 0, 0 };
+	SMALL_RECT writeRegion = { 0, 0, bufferSize.X - 1, bufferSize.Y - 1 };
+	WriteConsoleOutput(hConsole, (CHAR_INFO*)OutPutMemory, bufferSize, bufferCoord, &writeRegion);
+}
 
 /// <summary>
 /// 显示初始化，基于更改显存的方式
@@ -12,33 +39,29 @@ string OutPutMemory[30][120];
 void GUI_Init(int Mode)
 {
 	// 设置窗口大小
-	system("mode con cols=120 lines=30");
-	for (int i = 0; i < 120; i++) {
-		OutPutMemory[0][i] = "-";
+	COORD size = GetConsoleSize();
+	for (int i = 0; i < size.X; i++) {
+		OutPutMemory[0][i].Char.AsciiChar = '-';
+		OutPutMemory[0][i].Attributes = FOREGROUND_RED;
 	}
-	//cout << endl;
-	for (int m = 1; m < 28; m++) {
-		OutPutMemory[m][0] = "|";
-		for (int j = 1; j < 119; j++) {
-			OutPutMemory[m][j] = " ";
+	for (int m = 1; m < size.Y-2; m++) {
+		OutPutMemory[m][0].Char.AsciiChar = '|';
+		OutPutMemory[m][0].Attributes = FOREGROUND_RED;
+		for (int j = 1; j < size.X-1; j++) {
+			OutPutMemory[m][j].Char.AsciiChar = ' ';
+			OutPutMemory[m][j].Attributes = FOREGROUND_RED;
 		}
-		OutPutMemory[m][119]= "|";
+		OutPutMemory[m][size.X - 1].Char.AsciiChar = '|';
+		OutPutMemory[m][size.X - 1].Attributes = FOREGROUND_RED;
 	}
-	//cout << endl;
-	for (int n = 0; n < 120; n++) {
-		OutPutMemory[28][n] = "-";
+	for (int n = 0; n < size.X; n++) {
+		OutPutMemory[size.Y - 2][n].Char.AsciiChar = '-';
+		OutPutMemory[size.Y - 2][n].Attributes = FOREGROUND_RED;
 	}
 	// 刷新显存
 	if (Mode == 1)
 	{
-		for (int a = 0; a < 30; a++)
-		{
-			for (int j = 0; j < 120; j++)
-			{
-				cout << OutPutMemory[a][j];
-			}
-			cout << endl;
-		}
+		RefreshScreen();
 	}
 }
 
@@ -54,37 +77,35 @@ void GUI_Init(int Mode)
 /// <param name="Mode">是否刷新显存</param>
 void GUI_DrawRect(int x, int y, int w, int h, string arr,int Mode)
 {
-	//GUI_Init(1);
-	system("cls");
 
 	for (int i = 0; i <= w; i++)
 	{
-		OutPutMemory[y][x + i] = "-";
-		OutPutMemory[y + h][x + i] = "-";
+		OutPutMemory[y][x + i].Char.AsciiChar = '-';
+		OutPutMemory[y][x + i].Attributes = FOREGROUND_RED;
+
+		OutPutMemory[y + h][x + i].Char.AsciiChar = '-';
+		OutPutMemory[y + h][x + i].Attributes = FOREGROUND_RED;
 	}
 
 	for (int a = 0; a <= h; a++)
 	{
-		OutPutMemory[y + a][x] = "|";
-		OutPutMemory[y + a][x + w] = "|";
+		OutPutMemory[y + a][x].Char.AsciiChar = '|';
+		OutPutMemory[y + a][x].Attributes = FOREGROUND_RED;
+
+		OutPutMemory[y + a][x + w].Char.AsciiChar = '|';
+		OutPutMemory[y + a][x + w].Attributes = FOREGROUND_RED;
 	}
 
 	for (int i = 0; i < arr.length(); i++)
 	{
-		OutPutMemory[y + 1][x + i + 1] = arr[i];
+		OutPutMemory[y + 1][x + i + 1].Char.AsciiChar = arr[i];
+		OutPutMemory[y + 1][x + i + 1].Attributes = FOREGROUND_RED;
 	}
 
 	// 刷新显存
 	if (Mode == 1)
 	{
-		for (int a = 0; a < 30; a++)
-		{
-			for (int j = 0; j < 120; j++)
-			{
-				cout << OutPutMemory[a][j];
-			}
-			cout << endl;
-		}
+		RefreshScreen();
 	}
 }
 
@@ -99,28 +120,19 @@ void GUI_DrawRect(int x, int y, int w, int h, string arr,int Mode)
 /// <param name="Mode"></param>
 void GUI_Clear(int x, int y, int w, int h, int Mode)
 {
-	//static string OldOutPutMemory[30][120];		// 保存旧的显存
-	//// 保存旧的显存
-	//memcpy(OldOutPutMemory, OutPutMemory, sizeof(OutPutMemory));
 
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
-			OutPutMemory[y + i][x + j] = " ";
+			OutPutMemory[y + i][x + j].Char.AsciiChar = ' ';
+			OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
 		}
 	}
 	// 刷新显存
 	if (Mode == 1)
 	{
-		for (int a = 0; a < 30; a++)
-		{
-			for (int j = 0; j < 120; j++)
-			{
-				cout << OutPutMemory[a][j];
-			}
-			cout << endl;
-		}
+		RefreshScreen();
 	}
 	/*return OldOutPutMemory;*/
 }
@@ -128,7 +140,7 @@ void GUI_Clear(int x, int y, int w, int h, int Mode)
 /// <summary>
 /// 界面全填充#
 /// </summary>
-void GUI_PaddingAll(string c,int Mode)
+void GUI_PaddingAll(char c,int Mode)
 {
 	for (int i = 0; i < 29; i++)
 	{
@@ -139,51 +151,57 @@ void GUI_PaddingAll(string c,int Mode)
 			{
 				continue;
 			}
-			OutPutMemory[i][j] = c;
+			OutPutMemory[i][j].Char.AsciiChar = c;
+			OutPutMemory[i][j].Attributes = FOREGROUND_RED;
 		}
 	}
 
 	// 刷新显存
 	if (Mode == 1)
 	{
-		for (int a = 0; a < 30; a++)
-		{
-			for (int j = 0; j < 120; j++)
-			{
-				cout << OutPutMemory[a][j];
-			}
-			cout << endl;
-		}
+		RefreshScreen();
 	}
 }
 
 /// <summary>
-/// 部分填充#
+/// 部分填充字符
 /// </summary>
 /// <param name="x"></param>
 /// <param name="y"></param>
 /// <param name="w"></param>
 /// <param name="h"></param>
-/// <param name="Mode"></param>
-void GUI_PaddingPart(int x,int y,int w,int h,string c,int Mode)
+/// <param name="FlashMode">是否刷新显存</param>
+/// <param name="DisPalyMode">是否覆盖显示</param>
+void GUI_PaddingPart(int x,int y,int w,int h,char c,int FlashMode,int DisPalyMode)
 {
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
-			OutPutMemory[y + i][x + j] = c;
+			if (DisPalyMode)
+			{
+				OutPutMemory[y + i][x + j].Char.AsciiChar = c;
+				OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
+			}
+			else
+			{
+				char OldChar = OutPutMemory[y + i][x + j].Char.AsciiChar;
+				if (OldChar == ' ')
+				{
+					OutPutMemory[y + i][x + j].Char.AsciiChar = c;
+					OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
+				}
+				else
+				{
+					OutPutMemory[y + i][x + j].Char.AsciiChar = OldChar;
+					OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
+				}
+			}
 		}
 	}
 	// 刷新显存
-	if (Mode == 1)
+	if (FlashMode == 1)
 	{
-		for (int a = 0; a < 30; a++)
-		{
-			for (int j = 0; j < 120; j++)
-			{
-				cout << OutPutMemory[a][j];
-			}
-			cout << endl;
-		}
+		RefreshScreen();
 	}
 }
