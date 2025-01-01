@@ -1,9 +1,10 @@
 #include <iostream>
 #include "lib.h"
+#include <vector>
 using namespace std;
 
-// 设置显存    30行120列
-CHAR_INFO OutPutMemory[30][120];
+// 设置显存    默认30行120列
+vector<vector<CHAR_INFO>> OutPutMemory;
 
 // 获取控制台窗口大小
 COORD GetConsoleSize()
@@ -21,6 +22,20 @@ COORD GetConsoleSize()
 }
 
 
+// 初始化显存
+void InitOutputMemory(COORD size)
+{
+	OutPutMemory.resize(size.Y, vector<CHAR_INFO>(size.X));
+	for (int i = 0; i < size.Y; ++i)
+	{
+		for (int j = 0; j < size.X; ++j)
+		{
+			OutPutMemory[i][j].Char.AsciiChar = ' ';
+			OutPutMemory[i][j].Attributes = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+		}
+	}
+}
+
 // 刷新显存
 void RefreshScreen()
 {
@@ -29,7 +44,7 @@ void RefreshScreen()
 	COORD bufferSize = { size.X, size.Y };
 	COORD bufferCoord = { 0, 0 };
 	SMALL_RECT writeRegion = { 0, 0, bufferSize.X - 1, bufferSize.Y - 1 };
-	WriteConsoleOutput(hConsole, (CHAR_INFO*)OutPutMemory, bufferSize, bufferCoord, &writeRegion);
+	WriteConsoleOutput(hConsole, OutPutMemory[0].data(), bufferSize, bufferCoord, &writeRegion);
 }
 
 /// <summary>
@@ -40,6 +55,7 @@ void GUI_Init(int Mode)
 {
 	// 设置窗口大小
 	COORD size = GetConsoleSize();
+	InitOutputMemory(size);
 	for (int i = 0; i < size.X; i++) {
 		OutPutMemory[0][i].Char.AsciiChar = '-';
 		OutPutMemory[0][i].Attributes = FOREGROUND_RED;

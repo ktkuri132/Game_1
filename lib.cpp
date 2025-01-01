@@ -31,7 +31,7 @@ void GameStart()
 	//GUI_PaddingPart(10, 20, 5, 3, "A", 1);
 	//GUI_Clear(10,10,10,10);
 	//GUI_DrawRect(10, 10, 12, 5,"", 1);
-	thread t1(MoveCube, 60, 15, 5, 3, 10, 1, 'A', 1, 1000);
+	/*thread t1(MoveCube, 60, 15, 5, 3, 10, 1, 'A', 1, 1000);
 	thread t2(MoveCube, 60, 15, 5, 3, 10 ,2, 'B', 1, 1000);
 	thread t3(MoveCube, 60, 15, 5, 3, 10, 3, 'C', 1, 1000);
 	thread t4(MoveCube, 60, 15, 5, 3, 10, 4, 'D', 1, 1000);
@@ -46,7 +46,7 @@ void GameStart()
 	t5.join();
 	t6.join();
 	t7.join();
-	t8.join();
+	t8.join();*/
 	//MoveCube(10, 10, 5, 3, 10, '#',1,1000);
 	while (1)
 	{
