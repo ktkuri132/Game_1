@@ -2,6 +2,8 @@
 #include "lib.h"
 using namespace std;
 
+
+
 // 设置显存    30行120列
 CHAR_INFO OutPutMemory[30][120];
 
@@ -125,6 +127,10 @@ void GUI_Clear(int x, int y, int w, int h, int Mode)
 	{
 		for (int j = 0; j < w; j++)
 		{
+			if (OutPutMemory[y + i][x + j].Char.AsciiChar == '-' || OutPutMemory[y + i][x + j].Char.AsciiChar == '|')
+			{
+				continue;		// 不能破坏场地边界
+			}
 			OutPutMemory[y + i][x + j].Char.AsciiChar = ' ';
 			OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
 		}
