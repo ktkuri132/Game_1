@@ -41,14 +41,12 @@ void CubeColl(int px, int py, int w, int h, int len, int dir_1, int dir_2, char 
 			MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, dir_1, cube_A->c, 1, cube_A->speed, cube_A);
 			MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, dir_2, cube_A->c, 1, cube_A->speed, cube_A);
 		}
-		else if ((dir_1 == 5 && dir_2 == 7) || (dir_1 == 6 && dir_2 == 8))
+		else if ((dir_1 == 5 && dir_2 == 7) || (dir_1 == 7 && dir_2 == 5) || (dir_1 == 6 && dir_2 == 8))
 		{
 			if (((cube_A->px + cube_A->w) < 120)&&((cube_A->px + cube_A->w) > 0))
 			{
 				MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 5, cube_A->c, 1, cube_A->speed, cube_A);
 				MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 7, cube_A->c, 1, cube_A->speed, cube_A);
-				
-
 			}
 			else
 			{
@@ -97,13 +95,13 @@ void GameStart()
 	t7.join();
 	t8.join();*/
 	//MoveCube(10, 10, 5, 3, 10, '#',1,1000);
-	thread t1(CubeColl, 60, 15, 5, 3, -1, 1, 3, 'A', 10);
-	thread t2(CubeColl, 20, 6, 5, 3, -1, 5, 7, 'B', 10);
-	//thread t3(CubeColl, 40, 15, 5, 3, -1, 1, 3, 'C', 10);
-	thread t4(CubeColl, 80, 15, 5, 3, -1, 2, 4, 'D', 10);
+	thread t1(CubeColl, 60, 15, 5, 3, -1, 1, 3, 'A', 1);
+	thread t2(CubeColl, 20, 6, 5, 3, -1, 5, 7, 'B', 1);
+	thread t3(CubeColl, 40, 15, 5, 3, -1, 5, 7, 'C', 10);
+	thread t4(CubeColl, 80, 15, 5, 3, -1, 2, 4, 'D', 1);
 	t1.join();
 	t2.join();
-	//t3.join();
+	t3.join();
 	t4.join();
 
 	/*thread t1(MoveCube, 10, 10, 5, 3, -1,5, 'A', 1, 10, cube);
