@@ -7,12 +7,12 @@ using namespace std;
 // 设置显存    ConsoleWidth行ConsoleLength列
 CHAR_INFO OutPutMemory[ConsoleWidth][ConsoleLength];
 // 向控制台输出字符串
-void GUI_printf(const char* str, int len, int ecx,int ecy)
+void GUI_printf(const char* str, int len, int ecx,int ecy,int Color)
 {
 	for (int i = ecx ; i <= ecx + len;i++)
 	{
 		OutPutMemory[49 + ecy][i+1].Char.AsciiChar = str[i];
-		OutPutMemory[49 + ecy][i+1].Attributes = FOREGROUND_RED;
+		OutPutMemory[49 + ecy][i+1].Attributes = Color;
 	}
 	RefreshScreen();
 }

@@ -132,7 +132,7 @@ void CharPut(int x, int y, int len,const char* str)
 {
 	while (1)
 	{
-		GUI_printf(str, len ,x ,y );
+		GUI_printf(str, len ,x ,y , FOREGROUND_INTENSITY);
 	}
 }
 
@@ -173,7 +173,7 @@ void GameStart()
 	thread t2(CubeColl, 20, 6, 5, 3, -1, 5, 7, '#', 1);
 	thread t3(CubeColl, 40, 15, 5, 3, -1, 5, 7, '#', 1);
 	thread t4(CubeColl, 80, 15, 5, 3, -1, 2, 4, '#', 1);
-	thread t5(CharPut, 0, 0, 3, "小");
+	thread t5(CharPut, 0, 0, 14, "are you SB ??");
 
 
 	t1.join();

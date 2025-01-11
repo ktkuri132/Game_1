@@ -31,7 +31,7 @@ COORD GetConsoleSize();
 void full_screen();
 void SetSize(unsigned uCol, unsigned uLine);
 
-void GUI_printf(const char* str, int len, int ecx, int ecy);
+void GUI_printf(const char* str, int len, int ecx, int ecy, int Color);
 
 
 int CheckConsoleEncoding();
