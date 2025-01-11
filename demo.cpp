@@ -7,16 +7,24 @@ int main()
 {
 	while (1)
 	{
+		if (CheckConsoleEncoding())
+		{
+			cout << utf8_to_gbk("#####俄罗斯方块####") << endl;
+			cout << utf8_to_gbk("点击Enter开始游戏......") << endl;
+		}
+		else
+		{
+			cout << "#####俄罗斯方块####" << endl;
+			cout << "点击Enter开始游戏......" << endl;
+		}
 		
-		cout << "#####俄罗斯方块#####" << endl;
-
 		switch (cin.get())
 		{
 			case '\n':
 			{
+				full_screen();
 				system("cls");
-				system("mode con cols=120 lines=30");
-				cout << "####游戏开始####" << endl;
+				SetSize(ConsoleLength, ConsoleWidth);
 				GameStart();
 				break;
 			}

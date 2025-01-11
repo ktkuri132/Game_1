@@ -3,29 +3,12 @@
 #include <thread>
 using namespace std;
 
-
-/// <summary>
-/// 存储方块的结构体
-/// </summary>
-//typedef struct _Cube
-//{
-//	CHAR_INFO sCube;
-//	int px;
-//	int py;
-//	int w;
-//	int h;
-//	int len;
-//	int dir;
-//	char c;
-//	int speed;
-//}Cube;
-
 Cube* CubeHome[50];
 
 int CubeCollide(int px, int py, int w, int h)
 {
 	// 边界碰撞检查
-	if (px + w >= 120)
+	if (px + w >= ConsoleLength)
 	{
 		return 1;		// 右边界
 	}
@@ -33,7 +16,7 @@ int CubeCollide(int px, int py, int w, int h)
 	{
 		return 2;		// 左边界
 	}
-	else if (py + h >= 29)
+	else if (py + h >= ConsoleWidth -1)
 	{
 		return 3;		// 下边界
 	}
@@ -141,17 +124,15 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 				{
 					len = i;
 					CollideCallBack(CubeCollide(px + i, py, w, h));
-					
+					// 保存方块信息
+					cube->px = px + i;
+					cube->py = py;
+					cube->w = w;
+					cube->h = h;
 					return;
-					break;
 				}
 				GUI_PaddingPart(px + i, py, w, h, c, FlashMode, 0);	// 刷新重叠部分
-				// 保存方块信息
-				cube->px = px + i;
-				cube->py = py;
-				cube->w = w;
-				cube->h = h;
-				
+
 			}
 			else if (dir == 2)
 			{
@@ -160,16 +141,15 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 				{
 					len = i;
 					CollideCallBack(CubeCollide(px, py + i, w, h));
+					// 保存方块信息
+					cube->px = px ;
+					cube->py = py +i;
+					cube->w = w;
+					cube->h = h;
 					return;
-					break;
-
 				}
 				GUI_PaddingPart(px, py + i, w, h, c, FlashMode, 0);	// 刷新重叠部分
-				// 保存方块信息
-				cube->px = px ;
-				cube->py = py +i;
-				cube->w = w;
-				cube->h = h;
+				
 			}
 			else if (dir == 3)
 			{
@@ -178,16 +158,14 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 				{
 					len = i;
 					CollideCallBack(CubeCollide(px - i, py, w, h));
-					
+					// 保存方块信息
+					cube->px = px - i;
+					cube->py = py;
+					cube->w = w;
+					cube->h = h;
 					return;
-					break;
 				}
 				GUI_PaddingPart(px - i, py, w, h, c, FlashMode, 0);	// 刷新重叠部分
-				// 保存方块信息
-				cube->px = px - i;
-				cube->py = py;
-				cube->w = w;
-				cube->h = h;
 			}
 			else if (dir == 4)
 			{
@@ -196,19 +174,19 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 				{
 					len = i;
 					CollideCallBack(CubeCollide(px, py - i, w, h));
+					// 保存方块信息
+					cube->px = px ;
+					cube->py = py - i;
+					cube->w = w;
+					cube->h = h;
 					return;
-					break;
 				}
 				GUI_PaddingPart(px, py - i, w, h, c, FlashMode, 0);	// 刷新重叠部分
-				// 保存方块信息
-				cube->px = px ;
-				cube->py = py - i;
-				cube->w = w;
-				cube->h = h;
+				
 			}
 			else if (dir == 5)
 			{
-				GUI_Clear(px + i - 1, py + i - 1, w, h, 0);		// 清除上一帧
+				GUI_Clear(px + i -1, py + i - 1, w, h, 0);		// 清除上一帧
 				if (CubeCollide(px + i, py + i, w, h))
 				{
 					len = i;
@@ -235,10 +213,8 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 					cube->w = w;
 					cube->h = h;
 					return;
-					
 				}
 				GUI_PaddingPart(px - i, py + i, w, h, c, FlashMode, 0);	// 刷新重叠部分
-				
 			}
 			else if (dir == 7)
 			{
@@ -256,7 +232,6 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 					
 				}
 				GUI_PaddingPart(px + i, py - i, w, h, c, FlashMode, 0);	// 刷新重叠部分
-				
 			}
 			else if (dir == 8)
 			{
@@ -273,9 +248,7 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 					return;
 				}
 				GUI_PaddingPart(px - i, py - i, w, h, c, FlashMode, 0);	// 刷新重叠部分
-				
 			}
-			
 		}
 		//this_thread::sleep_for(chrono::milliseconds(speed));
 		Sleep(speed);

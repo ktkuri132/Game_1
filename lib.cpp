@@ -1,12 +1,78 @@
 #include <iostream>
 #include <stdio.h>
 #include <thread>
+#include <stdlib.h>
 #include "lib.h"
 using namespace std;
 
+
 extern struct Cube;
 
-extern CHAR_INFO OutPutMemory[30][120];
+extern CHAR_INFO OutPutMemory[ConsoleWidth][ConsoleLength];
+
+int Decodeformat = 0;
+
+
+
+// 控制台全屏
+void full_screen()
+{
+	HWND hwnd = GetForegroundWindow();
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);   /* 标准输出缓冲区句柄 */
+	int cx = GetSystemMetrics(SM_CXSCREEN);            /* 屏幕宽度 */
+	int cy = GetSystemMetrics(SM_CYSCREEN);            /* 屏幕高度 */
+
+	COORD size = GetConsoleSize();
+	SetSize(size.X, size.Y);
+	//SetWindowPos(hwnd, HWND_TOP, 0, 0, cx, cy , 0);
+	ShowWindow(hwnd, SW_MAXIMIZE); //最大化窗口
+	keybd_event(VK_F11, 0, 0, 0);
+}
+
+// 设置控制台大小
+void SetSize(unsigned uCol, unsigned uLine)
+{
+	char cmd[64];
+	sprintf_s(cmd, "mode con cols=%d lines=%d", uCol, uLine);
+	system(cmd);
+}
+
+
+std::string utf8_to_gbk(const std::string& utf8_str) {
+	// 先将 UTF-8 转换为 UTF-16
+	int utf16_len = MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, NULL, 0);
+	if (utf16_len == 0) {
+		return "";
+	}
+	std::wstring utf16_str(utf16_len, 0);
+	MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, &utf16_str[0], utf16_len);
+
+	// 再将 UTF-16 转换为 GBK
+	int gbk_len = WideCharToMultiByte(CP_ACP, 0, utf16_str.c_str(), -1, NULL, 0, NULL, NULL);
+	if (gbk_len == 0) {
+		return "";
+	}
+	std::string gbk_str(gbk_len, 0);
+	WideCharToMultiByte(CP_ACP, 0, utf16_str.c_str(), -1, &gbk_str[0], gbk_len, NULL, NULL);
+
+	return gbk_str;
+}
+
+int CheckConsoleEncoding() {
+	UINT codePage = GetConsoleOutputCP();
+	if (codePage == CP_UTF8) {
+		//std::cout << "当前控制台编码是 UTF-8" << std::endl;
+		return 1;
+	}
+	else if (codePage == 936) { // 936 是 GBK 的代码页
+		//std::cout << "当前控制台编码是 GBK" << std::endl;
+		return 0;
+	}
+	else {
+		//std::cout << "当前控制台编码是其他编码: " << codePage << std::endl;
+		return -1;
+	}
+}
 
 /// <summary>
 /// 初始界面选项
@@ -95,10 +161,10 @@ void GameStart()
 	t7.join();
 	t8.join();*/
 	//MoveCube(10, 10, 5, 3, 10, '#',1,1000);
-	thread t1(CubeColl, 60, 15, 5, 3, -1, 1, 3, 'A', 1);
-	thread t2(CubeColl, 20, 6, 5, 3, -1, 5, 7, 'B', 1);
-	thread t3(CubeColl, 40, 15, 5, 3, -1, 5, 7, 'C', 10);
-	thread t4(CubeColl, 80, 15, 5, 3, -1, 2, 4, 'D', 1);
+	thread t1(CubeColl, 60, 15, 5, 3, -1, 1, 3, '#', 1);
+	thread t2(CubeColl, 20, 6, 5, 3, -1, 5, 7, '#', 1);
+	thread t3(CubeColl, 40, 15, 5, 3, -1, 5, 7, '#', 1);
+	thread t4(CubeColl, 80, 15, 5, 3, -1, 2, 4, '#', 1);
 	t1.join();
 	t2.join();
 	t3.join();

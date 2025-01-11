@@ -7,6 +7,9 @@
 #include <cstring>
 #include <windows.h>
 
+#define ConsoleLength	209
+#define ConsoleWidth	50
+
 typedef struct Cube
 {
 	CHAR_INFO sCube;
@@ -21,6 +24,18 @@ typedef struct Cube
 };
 
 using namespace std;
+
+
+COORD GetConsoleSize();
+
+void full_screen();
+void SetSize(unsigned uCol, unsigned uLine);
+
+
+int CheckConsoleEncoding();
+std::string utf8_to_gbk(const std::string& utf8_str);
+
+
 void witerEdge();
 void GameStart();
 void MoveCube(int px, int py, int w, int h, int len,int dir, char c, int FlashMode, int speed, Cube* cube);

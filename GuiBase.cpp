@@ -4,8 +4,8 @@ using namespace std;
 
 
 
-// 设置显存    30行120列
-CHAR_INFO OutPutMemory[30][120];
+// 设置显存    ConsoleWidth行ConsoleLength列
+CHAR_INFO OutPutMemory[ConsoleWidth][ConsoleLength];
 
 // 获取控制台窗口大小
 COORD GetConsoleSize()
@@ -19,7 +19,7 @@ COORD GetConsoleSize()
 		size.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 		return size;
 	}
-	return { 120, 30 }; // 默认大小
+	return { ConsoleLength, ConsoleWidth }; // 默认大小
 }
 
 
@@ -148,12 +148,12 @@ void GUI_Clear(int x, int y, int w, int h, int Mode)
 /// </summary>
 void GUI_PaddingAll(char c,int Mode)
 {
-	for (int i = 0; i < 29; i++)
+	for (int i = 0; i < ConsoleWidth-1; i++)
 	{
-		for (int j = 0; j < 120; j++)
+		for (int j = 0; j < ConsoleLength; j++)
 		{
 			// 略过边框
-			if (i == 0 || i == 28 || j == 0 || j == 119)
+			if (i == 0 || i == ConsoleWidth-2 || j == 0 || j == ConsoleLength-1)
 			{
 				continue;
 			}
