@@ -16,7 +16,7 @@ int CubeCollide(int px, int py, int w, int h)
 	{
 		return 2;		// 左边界
 	}
-	else if (py + h >= ConsoleWidth -1)
+	else if (py + h >= ConsoleWidth -1 -6)
 	{
 		return 3;		// 下边界
 	}
@@ -131,6 +131,7 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 					cube->h = h;
 					return;
 				}
+				
 				GUI_PaddingPart(px + i, py, w, h, c, FlashMode, 0);	// 刷新重叠部分
 
 			}
@@ -250,8 +251,8 @@ void MoveCube(int px,int py,int w,int h,int len, int dir, char c , int FlashMode
 				GUI_PaddingPart(px - i, py - i, w, h, c, FlashMode, 0);	// 刷新重叠部分
 			}
 		}
-		//this_thread::sleep_for(chrono::milliseconds(speed));
-		Sleep(speed);
+		this_thread::sleep_for(chrono::milliseconds(speed));
+		//Sleep(speed);
 	}
 }
 

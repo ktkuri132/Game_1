@@ -128,6 +128,14 @@ void CubeColl(int px, int py, int w, int h, int len, int dir_1, int dir_2, char 
 	}
 }
 
+void CharPut(int x, int y, int len,const char* str)
+{
+	while (1)
+	{
+		GUI_printf(str, len ,x ,y );
+	}
+}
+
 /// <summary>
 /// 游戏开始
 /// </summary>
@@ -165,15 +173,18 @@ void GameStart()
 	thread t2(CubeColl, 20, 6, 5, 3, -1, 5, 7, '#', 1);
 	thread t3(CubeColl, 40, 15, 5, 3, -1, 5, 7, '#', 1);
 	thread t4(CubeColl, 80, 15, 5, 3, -1, 2, 4, '#', 1);
+	thread t5(CharPut, 0, 0, 3, "小");
+
+
 	t1.join();
 	t2.join();
 	t3.join();
 	t4.join();
-
+	t5.join();
 	/*thread t1(MoveCube, 10, 10, 5, 3, -1,5, 'A', 1, 10, cube);
 	t1.join();*/
 	
-
+	
 	while (1)
 	{
 		

@@ -8,7 +8,7 @@
 #include <windows.h>
 
 #define ConsoleLength	209
-#define ConsoleWidth	50
+#define ConsoleWidth	56
 
 typedef struct Cube
 {
@@ -30,6 +30,8 @@ COORD GetConsoleSize();
 
 void full_screen();
 void SetSize(unsigned uCol, unsigned uLine);
+
+void GUI_printf(const char* str, int len, int ecx, int ecy);
 
 
 int CheckConsoleEncoding();

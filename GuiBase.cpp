@@ -6,6 +6,17 @@ using namespace std;
 
 // 设置显存    ConsoleWidth行ConsoleLength列
 CHAR_INFO OutPutMemory[ConsoleWidth][ConsoleLength];
+// 向控制台输出字符串
+void GUI_printf(const char* str, int len, int ecx,int ecy)
+{
+	for (int i = ecx ; i <= ecx + len;i++)
+	{
+		OutPutMemory[49 + ecy][i+1].Char.AsciiChar = str[i];
+		OutPutMemory[49 + ecy][i+1].Attributes = FOREGROUND_RED;
+	}
+	RefreshScreen();
+}
+
 
 // 获取控制台窗口大小
 COORD GetConsoleSize()
@@ -42,11 +53,13 @@ void GUI_Init(int Mode)
 {
 	// 设置窗口大小
 	COORD size = GetConsoleSize();
+	// 画顶层边界
 	for (int i = 0; i < size.X; i++) {
 		OutPutMemory[0][i].Char.AsciiChar = '-';
 		OutPutMemory[0][i].Attributes = FOREGROUND_RED;
 	}
-	for (int m = 1; m < size.Y-2; m++) {
+	// 画侧面边界
+	for (int m = 1; m < size.Y-2-6; m++) {
 		OutPutMemory[m][0].Char.AsciiChar = '|';
 		OutPutMemory[m][0].Attributes = FOREGROUND_RED;
 		for (int j = 1; j < size.X-1; j++) {
@@ -56,9 +69,26 @@ void GUI_Init(int Mode)
 		OutPutMemory[m][size.X - 1].Char.AsciiChar = '|';
 		OutPutMemory[m][size.X - 1].Attributes = FOREGROUND_RED;
 	}
+	// 画底层边界
 	for (int n = 0; n < size.X; n++) {
-		OutPutMemory[size.Y - 2][n].Char.AsciiChar = '-';
-		OutPutMemory[size.Y - 2][n].Attributes = FOREGROUND_RED;
+		OutPutMemory[size.Y - 2 - 6][n].Char.AsciiChar = '-';
+		OutPutMemory[size.Y - 2 - 6][n].Attributes = FOREGROUND_RED;
+	}
+	// 画字符层侧面边界
+	for (int m = size.Y - 2 - 5 ; m < size.Y - 2 ; m++) {
+		OutPutMemory[m][0].Char.AsciiChar = '|';
+		OutPutMemory[m][0].Attributes = FOREGROUND_RED;
+		for (int j = 1; j < size.X - 1; j++) {
+			OutPutMemory[m][j].Char.AsciiChar = ' ';
+			OutPutMemory[m][j].Attributes = FOREGROUND_RED;
+		}
+		OutPutMemory[m][size.X - 1].Char.AsciiChar = '|';
+		OutPutMemory[m][size.X - 1].Attributes = FOREGROUND_RED;
+	}
+	// 画字符层底层边界
+	for (int n = 0; n < size.X; n++) {
+		OutPutMemory[size.Y - 2 ][n].Char.AsciiChar = '-';
+		OutPutMemory[size.Y - 2 ][n].Attributes = FOREGROUND_RED;
 	}
 	// 刷新显存
 	if (Mode == 1)
@@ -169,6 +199,45 @@ void GUI_PaddingAll(char c,int Mode)
 	}
 }
 
+
+/// <summary>
+/// 写入单个字符
+/// </summary>
+void GUI_WirterPixel(int x, int y, char c,int Color,int FlashMode,int DisPalyMode)
+{
+	// 首先检查是否是边界
+	if (OutPutMemory[y][x].Char.AsciiChar != '-' && OutPutMemory[y][x].Char.AsciiChar != '|')
+	{
+		// 检查当前位置是否有字符
+		if (OutPutMemory[y][x].Char.AsciiChar != ' ')
+		{
+			// 当前位置有字符
+			if (DisPalyMode)
+			{
+				// 覆盖显示
+				OutPutMemory[y][x].Char.AsciiChar = c;
+				OutPutMemory[y][x].Attributes = Color;
+			}
+			else
+			{
+				// 直接返回，不更新显存
+				return;
+			}
+		}
+		// 假如当前位置没有字符
+		else
+		{
+			OutPutMemory[y][x].Char.AsciiChar = c;
+			OutPutMemory[y][x].Attributes = Color;
+		}
+	}
+	// 刷新显存
+	if (FlashMode == 1)
+	{
+		RefreshScreen();
+	}
+}
+
 /// <summary>
 /// 部分填充字符
 /// </summary>
@@ -180,31 +249,15 @@ void GUI_PaddingAll(char c,int Mode)
 /// <param name="DisPalyMode">是否覆盖显示</param>
 void GUI_PaddingPart(int x,int y,int w,int h,char c,int FlashMode,int DisPalyMode)
 {
+	
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
-			if (DisPalyMode)
-			{
-				OutPutMemory[y + i][x + j].Char.AsciiChar = c;
-				OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
-			}
-			else
-			{
-				char OldChar = OutPutMemory[y + i][x + j].Char.AsciiChar;
-				if (OldChar == ' ')
-				{
-					OutPutMemory[y + i][x + j].Char.AsciiChar = c;
-					OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
-				}
-				else
-				{
-					OutPutMemory[y + i][x + j].Char.AsciiChar = OldChar;
-					OutPutMemory[y + i][x + j].Attributes = FOREGROUND_RED;
-				}
-			}
+			GUI_WirterPixel(x + j, y + i, c, FOREGROUND_RED, 0, DisPalyMode);
 		}
 	}
+	
 	// 刷新显存
 	if (FlashMode == 1)
 	{
