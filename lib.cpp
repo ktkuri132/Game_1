@@ -90,49 +90,86 @@ void witerEdge()
 }
 
 
-void CubeColl(int px, int py, int w, int h, int len, int dir_1, int dir_2, char c, int speed)
+void CubeColl(int dir_1, int dir_2,Cube* cube_A)
 {
-	Cube* cube_A = new Cube;
-	cube_A->px = px;
-	cube_A->py = py;
-	cube_A->w = w,
-	cube_A->h = h;
-	cube_A->len = -1;
-	cube_A->c = c;
-	cube_A->speed = speed;
+	
 	while (1)
 	{	
 		if ((dir_1 == 1 && dir_2 == 3)||(dir_1 == 2 && dir_2 == 4))
 		{
-			MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, dir_1, cube_A->c, 1, cube_A->speed, cube_A);
-			MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, dir_2, cube_A->c, 1, cube_A->speed, cube_A);
+			cube_A->dir = dir_1;
+			MoveCube( 1, cube_A);
+			cube_A->dir = dir_2;
+			MoveCube( 1, cube_A);
 		}
 		else if ((dir_1 == 5 && dir_2 == 7) || (dir_1 == 7 && dir_2 == 5) || (dir_1 == 6 && dir_2 == 8))
 		{
 			if (((cube_A->px + cube_A->w) < 120)&&((cube_A->px + cube_A->w) > 0))
 			{
-				MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 5, cube_A->c, 1, cube_A->speed, cube_A);
-				MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 7, cube_A->c, 1, cube_A->speed, cube_A);
+				cube_A->dir = dir_1;
+				MoveCube(1, cube_A);
+				cube_A->dir = dir_2;
+				MoveCube(1, cube_A);
 			}
 			else
 			{
-				MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 6, cube_A->c, 1, cube_A->speed, cube_A);
-				MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 8, cube_A->c, 1, cube_A->speed, cube_A);
+				cube_A->dir = dir_1;
+				MoveCube(1, cube_A);
+				cube_A->dir = dir_2;
+				MoveCube(1, cube_A);
 				if (((cube_A->py + cube_A->h) <= 29) && ((cube_A->py + cube_A->h) >= 0))
 				{
-					MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 8, cube_A->c, 1, cube_A->speed, cube_A);
-					MoveCube(cube_A->px, cube_A->py, cube_A->w, cube_A->h, -1, 6, cube_A->c, 1, cube_A->speed, cube_A);
+					cube_A->dir = dir_1;
+					MoveCube(1, cube_A);
+					cube_A->dir = dir_2;
+					MoveCube(1, cube_A);
 				}
 			}
 		}
 	}
 }
 
-void CharPut(int x, int y, int len,const char* str)
+char UserInfoKeyEvent;
+short UserInfoMouseEvent[4];
+
+void CharPut(Cube* cube)
 {
 	while (1)
 	{
-		GUI_printf(str, len ,x ,y , FOREGROUND_INTENSITY);
+		GUI_printf(1,5,0, 0,  FOREGROUND_INTENSITY ,"key:%c", UserInfoKeyEvent);
+		
+	}
+}
+
+void GetUserInput(Cube* cube)
+{
+	while (1)
+	{
+		if (UserInfoKeyEvent == 'w')
+		{
+			cube->dir = 4;
+			cube->len++;
+			UserInfoKeyEvent = ' ';
+		}
+		else if (UserInfoKeyEvent == 's')
+		{
+			cube->dir = 2;
+			cube->len++;
+			UserInfoKeyEvent = ' ';
+		}
+		else if (UserInfoKeyEvent == 'a')
+		{
+			cube->dir = 3;
+			cube->len++;
+			UserInfoKeyEvent = ' ';
+		}
+		else if (UserInfoKeyEvent == 'd')
+		{
+			cube->dir = 1;
+			cube->len++;
+			UserInfoKeyEvent = ' ';
+		}
+		
 	}
 }
 
@@ -151,7 +188,14 @@ void GameStart()
 	//GUI_DrawRect(10, 10, 12, 5,"", 1);
 	
 	
-	Cube* cube = new Cube;
+	Cube* cube_A = new Cube;
+	Cube* cube_B = new Cube;
+	Cube* cube_C = new Cube;
+	Cube* cube_D = new Cube;
+	Cube* cube_E = new Cube;
+	Cube* cube_F = new Cube;
+	Cube* cube_G = new Cube;
+	Cube* cube_H = new Cube;
 	
 	/*thread t2(MoveCube, 60, 15, 5, 3, 10 ,2, 'B', 1, 1000);
 	thread t3(MoveCube, 60, 15, 5, 3, 10, 3, 'C', 1, 1000);
@@ -169,26 +213,67 @@ void GameStart()
 	t7.join();
 	t8.join();*/
 	//MoveCube(10, 10, 5, 3, 10, '#',1,1000);
-	thread t1(CubeColl, 60, 15, 5, 3, -1, 1, 3, '#', 1);
-	thread t2(CubeColl, 20, 6, 5, 3, -1, 5, 7, '#', 1);
-	thread t3(CubeColl, 40, 15, 5, 3, -1, 5, 7, '#', 1);
-	thread t4(CubeColl, 80, 15, 5, 3, -1, 2, 4, '#', 1);
-	thread t5(CharPut, 0, 0, 14, "are you SB ??");
+	cube_A->px = 10;
+	cube_A->py = 10;
+	cube_A->w = 5;
+	cube_A->h = 3;
+	cube_A->len = 10;
+	cube_A->dir = 1;
+	cube_A->c = '#';
+	cube_A->speed = 1;
+	//thread t1(MoveCube, 1,cube_A);
+	thread t2(MoveCube, 1, cube_A);
+	/*thread t3(CubeColl, 30, 15, 5, 3, -1, 5, 7, '#', 1, cube_C);
+	thread t4(CubeColl, 40, 20, 5, 3, -1, 2, 4, '#', 1, cube_D);
+	thread t5(CubeColl, 50, 15, 5, 3, -1, 1, 3, '#', 1, cube_E);
+	thread t6(CubeColl, 60, 6, 5, 3, -1, 5, 7, '#', 1, cube_F);
+	thread t7(CubeColl, 70, 15, 5, 3, -1, 5, 7, '#', 1, cube_G);
+	thread t8(CubeColl, 80, 30, 5, 3, -1, 2, 4, '#', 1, cube_H);
+	thread t9(CubeColl, 90, 25, 5, 3, -1, 1, 3, '#', 1, cube_A);
+	thread t10(CubeColl,100, 6, 5, 3, -1, 5, 7, '#', 1, cube_B);
+	thread t11(CubeColl, 110, 15, 5, 3, -1, 5, 7, '#', 1, cube_C);
+	thread t12(CubeColl, 120, 40, 5, 3, -1, 2, 4, '#', 1, cube_D);
+	thread t13(CubeColl, 130, 35, 5, 3, -1, 1, 3, '#', 1, cube_E);
+	thread t14(CubeColl, 140, 6, 5, 3, -1, 5, 7, '#', 1, cube_F);
+	thread t15(CubeColl, 150, 15, 5, 3, -1, 5, 7, '#', 1, cube_G);
+	thread t16(CubeColl, 160, 15, 5, 3, -1, 2, 4, '#', 1, cube_H);
+	thread t17(CubeColl, 170, 45, 5, 3, -1, 1, 3, '#', 1, cube_A);
+	thread t18(CubeColl, 180, 6, 5, 3, -1, 5, 7, '#', 1, cube_B);
+	thread t19(CubeColl, 190, 15, 5, 3, -1, 5, 7, '#', 1, cube_C);
+	thread t20(CubeColl, 200, 15, 5, 3, -1, 2, 4, '#', 1, cube_D);*/
+	thread t21(CharPut,cube_A);
+	
+	thread t23(GetUserInput, cube_A);
+	thread t24(ReadConsoleInputExample);
 
-
-	t1.join();
+	//t1.join();
 	t2.join();
-	t3.join();
+	/*t3.join();
 	t4.join();
 	t5.join();
+	t6.join();
+	t7.join();
+	t8.join();
+	t9.join();
+	t10.join();
+	t11.join();
+	t12.join();
+	t13.join();
+	t14.join();
+	t15.join();
+	t16.join();
+	t17.join();
+	t18.join();
+	t19.join();
+	t20.join();*/
+	t21.join();
+	
+	t23.join();
+	t24.join();
 	/*thread t1(MoveCube, 10, 10, 5, 3, -1,5, 'A', 1, 10, cube);
 	t1.join();*/
 	
 	
-	while (1)
-	{
-		
-		//MoveCube(10, 10, 5, 3, -1, 7, 'A', 1, 10, cube);
-	}
+	for (;;);
 	
 }

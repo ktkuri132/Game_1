@@ -28,10 +28,13 @@ using namespace std;
 
 COORD GetConsoleSize();
 
+void ReadConsoleInputExample();
+
+
 void full_screen();
 void SetSize(unsigned uCol, unsigned uLine);
 
-void GUI_printf(const char* str, int len, int ecx, int ecy, int Color);
+void GUI_printf(int FlashMode, int len, int ecx, int ecy, int Color, const char* str, ...);
 
 
 int CheckConsoleEncoding();
@@ -40,7 +43,7 @@ std::string utf8_to_gbk(const std::string& utf8_str);
 
 void witerEdge();
 void GameStart();
-void MoveCube(int px, int py, int w, int h, int len,int dir, char c, int FlashMode, int speed, Cube* cube);
+void MoveCube(int FlashMode, Cube* cube);
 
 void RefreshScreen();
 void GUI_Init(int Mode);

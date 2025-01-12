@@ -2,19 +2,76 @@
 #include "lib.h"
 using namespace std;
 
+extern char UserInfoKeyEvent;
+extern short UserInfoMouseEvent[4];
+void ReadConsoleInputExample() {
+	HANDLE hConsoleInput = GetStdHandle(STD_INPUT_HANDLE);
+	if (hConsoleInput == INVALID_HANDLE_VALUE) {
+		cerr << "获取控制台输入句柄失败" << endl;
+		return;
+	}
+	DWORD prev_mode;
+	GetConsoleMode(hConsoleInput, &prev_mode);
+	SetConsoleMode(hConsoleInput, ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT);
 
+	INPUT_RECORD inputRecord;
+	DWORD events;
+	while (true) {
+		ReadConsoleInput(hConsoleInput, &inputRecord, 1, &events);
+		if (inputRecord.EventType == MOUSE_EVENT) {
+			MOUSE_EVENT_RECORD mouseEvent = inputRecord.Event.MouseEvent;
+			if (mouseEvent.dwEventFlags == 0) {
+				if (mouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED) {
+					UserInfoMouseEvent[0] = 1;
+					UserInfoMouseEvent[2] = mouseEvent.dwMousePosition.X;
+					UserInfoMouseEvent[3] = mouseEvent.dwMousePosition.Y;
+					GUI_printf(1,13, 0, 2, FOREGROUND_INTENSITY, "mouse:%d,%d,%d", UserInfoMouseEvent[0], UserInfoMouseEvent[2], UserInfoMouseEvent[3]);
+				}
+				else if (mouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED) {
+					UserInfoMouseEvent[0] = 2;
+					UserInfoMouseEvent[2] = mouseEvent.dwMousePosition.X;
+					UserInfoMouseEvent[3] = mouseEvent.dwMousePosition.Y;
+					GUI_printf(1,13, 0, 2, FOREGROUND_INTENSITY, "mouse:%d,%d,%d", UserInfoMouseEvent[0], UserInfoMouseEvent[2], UserInfoMouseEvent[3]);
+				}
+			}
+			else if (mouseEvent.dwEventFlags == MOUSE_MOVED) {
+				UserInfoMouseEvent[0] = 3;
+				UserInfoMouseEvent[2] = mouseEvent.dwMousePosition.X;
+				UserInfoMouseEvent[3] = mouseEvent.dwMousePosition.Y;
+				GUI_printf(1,13, 0, 2, FOREGROUND_INTENSITY, "mouse:%d,%d,%d", UserInfoMouseEvent[0], mouseEvent.dwMousePosition.X, mouseEvent.dwMousePosition.Y);
+			}
+		}
+		else if (inputRecord.EventType == KEY_EVENT && inputRecord.Event.KeyEvent.bKeyDown) {
+			char ch = inputRecord.Event.KeyEvent.uChar.AsciiChar;
+			UserInfoKeyEvent = ch;
+		}
+	}
+}
 
 // 设置显存    ConsoleWidth行ConsoleLength列
 CHAR_INFO OutPutMemory[ConsoleWidth][ConsoleLength];
 // 向控制台输出字符串
-void GUI_printf(const char* str, int len, int ecx,int ecy,int Color)
+void GUI_printf(int FlashMode,int len, int ecx,int ecy,int Color,const char* str,...)
 {
+	char String[256];						//定义字符数组
+	va_list arg;							//定义可变参数列表数据类型的变量arg
+	va_start(arg, str);					//从format开始，接收参数列表到arg变量
+	vsprintf_s(String, str, arg);			//使用vsprintf打印格式化字符串和参数列表到字符数组中
+	va_end(arg);							//结束变量arg
 	for (int i = ecx ; i <= ecx + len;i++)
 	{
-		OutPutMemory[49 + ecy][i+1].Char.AsciiChar = str[i];
+		OutPutMemory[49 + ecy][i+1].Char.AsciiChar = String[i];
 		OutPutMemory[49 + ecy][i+1].Attributes = Color;
 	}
-	RefreshScreen();
+	if (FlashMode)
+	{
+		COORD size = GetConsoleSize();
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		COORD bufferSize = { size.X, size.Y };
+		COORD bufferCoord = { 0, 0 };
+		SMALL_RECT writeRegion = { 0, 0, bufferSize.X - 1, bufferSize.Y - 1 };
+		WriteConsoleOutput(hConsole, (CHAR_INFO*)OutPutMemory, bufferSize, bufferCoord, &writeRegion);
+	}
 }
 
 
