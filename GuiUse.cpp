@@ -68,24 +68,11 @@ void CollideCallBack(int colret)
 	}
 }
 
-
-void StopCube(int px, int py, int w, int h)
-{
-	
-}
-
 /// <summary>
 /// 方块移动
 /// </summary>
-/// <param name="px">起始x坐标</param>
-/// <param name="py">起始y坐标</param>
-/// <param name="w">x轴方向长度</param>
-/// <param name="h">y轴方向长度</param>
-/// <param name="len">移动距离</param>
-/// <param name="dir">移动方向</param>
-/// <param name="c">字符</param>
 /// <param name="FlashMode">刷新显存</param>
-/// <param name="speed">移动速度</param>
+/// <param name="cube">方块结构体</param>
 void MoveCube(int FlashMode ,Cube* cube)
 {
 	int i = 0;
@@ -210,6 +197,4 @@ end:
 		}
 	}
 }
-
-
 

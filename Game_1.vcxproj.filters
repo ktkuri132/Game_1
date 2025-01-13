@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="资源文件\游戏图形">
+      <UniqueIdentifier>{8749bcaa-153a-48a6-b93c-034117115ce7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo.cpp">
@@ -22,10 +25,13 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GuiBase.cpp">
-      <Filter>资源文件</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GuiUse.cpp">
-      <Filter>资源文件</Filter>
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stone.cpp">
+      <Filter>资源文件\游戏图形</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
