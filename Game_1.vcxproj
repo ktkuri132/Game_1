@@ -131,6 +131,8 @@
     <ClCompile Include="GuiBase.cpp" />
     <ClCompile Include="GuiUse.cpp" />
     <ClCompile Include="lib.cpp" />
+    <ClCompile Include="readme.cpp" />
+    <ClCompile Include="readme.h" />
     <ClCompile Include="stone.cpp" />
   </ItemGroup>
   <ItemGroup>

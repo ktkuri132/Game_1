@@ -12,7 +12,18 @@ extern CHAR_INFO OutPutMemory[ConsoleWidth][ConsoleLength];
 
 int Decodeformat = 0;
 
-
+void Guicout(const char* arr,int m,int n)
+{
+	for (int i = 0; i < m; i++)
+	{
+		cout << arr[i];
+		Sleep(10);
+	}
+	if (n)
+	{
+		cout << endl;
+	}
+}
 
 // 控制台全屏
 void full_screen()

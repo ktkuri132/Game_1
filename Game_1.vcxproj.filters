@@ -16,6 +16,9 @@
     <Filter Include="资源文件\游戏图形">
       <UniqueIdentifier>{8749bcaa-153a-48a6-b93c-034117115ce7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="资源文件\文档">
+      <UniqueIdentifier>{193c7999-299b-49e2-92f4-44ae1764ab44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo.cpp">
@@ -32,6 +35,12 @@
     </ClCompile>
     <ClCompile Include="stone.cpp">
       <Filter>资源文件\游戏图形</Filter>
+    </ClCompile>
+    <ClCompile Include="readme.cpp">
+      <Filter>资源文件\文档</Filter>
+    </ClCompile>
+    <ClCompile Include="readme.h">
+      <Filter>头文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,9 @@ typedef struct Cube
 
 using namespace std;
 
+void Guicout(const char* arr, int m, int n);
+
+
 
 COORD GetConsoleSize();
 
