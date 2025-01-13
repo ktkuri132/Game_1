@@ -160,13 +160,13 @@ void GetUserInput(Cube* cube)
 		else if (UserInfoKeyEvent == 'a')
 		{
 			cube->dir = 3;
-			cube->len++;
+			cube->len+=3;
 			UserInfoKeyEvent = ' ';
 		}
 		else if (UserInfoKeyEvent == 'd')
 		{
 			cube->dir = 1;
-			cube->len++;
+			cube->len+=3;
 			UserInfoKeyEvent = ' ';
 		}
 		
